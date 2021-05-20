@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{SYSTEM PROGRAMMING }
+\author{HOMEWORK 4  }
+\date{JIN HUSSEN}
+
+\begin{document}
+
+\maketitle
+
+\section{THE MAIN THREAD }
+the program starts with parsing the command line , it checks if it is valid or not and returns the names of the given input files then it opens the input files and checks if the have opened successfully .
+After that it checks if the homework input file is valid or not , if not it prints an error message and then terminates the program .
+After that it starts reading the students input file and store them in an array with their information (speed , price and quality ) .
+Then it initializes the semaphores and creates the other threads .
+then in a loop , it first checks if the termination signal has arrived or if the homework queue is empty  and the homework file is already closed , if so it terminates all the other threads , frees all the memory blocks and terminates the program .
+If not , the main thread unlocks the critical region (reading and writing into the homework queue )(mutex1) then it waits until one thread start doing the previous homework (homeworkTakensem)
+then checks if there are any homeworks in the queue(sem1) , after that it reads one homework from the queue and places it in a global variable , then it calls find student function to decide which student must do the homework . IF find student function returns (-1) 
+it means that the money left is not enough so the main thread terminates the program, otherwise it waits until there is at least one student not working (student-finished semaphore ). 
+
+\maketitle
+
+\section{H THREAD }
+IT reads the given file until it reaches the end of the file or until the money amount is not enough , it locks the region before adding to the queue , then it posts (sem1) semaphore to notify the main thread that at least there is one homework in the queue
+
+
+
+
+
+
+
+
+
+
+
+
+\maketitle
+
+\section{STUDENTS TO HIRE THREADS   }
+It gets the students array as an argument , as each student has his own semaphore , it waits until the main thread notify him(posts his semaphore ) to start doing the homework , it checks if exit is '1' or not , if so it exits if not it sets the flag to '1' (means that its busy) ,posts (homework-taken )semaphore to tell the main thread that another homework can be posted to be done ,then goes to sleep 
+after waking up it notify the main thread that he  is not working and can start doing another homework if available . 
+
+
+\end{document}
+
